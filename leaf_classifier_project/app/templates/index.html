@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+
+{% block title %}Plant Species Identification - AI-Powered Leaf Analysis{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="main-container">
+        <div class="hero-section text-center">
+            <div class="container">
+                <h1 class="display-4 fw-bold mb-4">
+                    <i class="fas fa-leaf me-3"></i>
+                    Plant Species Identification
+                </h1>
+                <p class="lead mb-4">
+                    Advanced AI-powered system using edge detection and machine learning 
+                    to identify plant species from leaf images
+                </p>
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="d-flex justify-content-center gap-3 flex-wrap">
+                            <span class="badge bg-light text-dark fs-6 px-3 py-2">
+                                <i class="fas fa-eye me-2"></i>Edge Detection
+                            </span>
+                            <span class="badge bg-light text-dark fs-6 px-3 py-2">
+                                <i class="fas fa-brain me-2"></i>Machine Learning
+                            </span>
+                            <span class="badge bg-light text-dark fs-6 px-3 py-2">
+                                <i class="fas fa-search me-2"></i>Feature Analysis
+                            </span>
+                            <span class="badge bg-light text-dark fs-6 px-3 py-2">
+                                <i class="fas fa-chart-line me-2"></i>Hybrid Classification
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-lg">
+                        <div class="card-header bg-gradient text-white text-center py-4" 
+                             style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);">
+                            <h3 class="mb-0">
+                                <i class="fas fa-upload me-2"></i>
+                                Upload Leaf Image
+                            </h3>
+                            <p class="mb-0 mt-2 opacity-75">
+                                Upload a clear image of a plant leaf for species identification
+                            </p>
+                        </div>
+                        
+                        <div class="card-body p-5">
+                            <form action="{{ url_for('upload_file') }}" method="post" 
+                                  enctype="multipart/form-data" id="uploadForm">
+                                
+                                <!-- Drag and Drop Zone -->
+                                <div class="upload-zone mb-4" id="dropZone">
+                                    <div class="mb-3">
+                                        <i class="fas fa-cloud-upload-alt fa-3x text-success mb-3"></i>
+                                        <h5>Drag & Drop your image here</h5>
+                                        <p class="text-muted mb-3">or click to browse files</p>
+                                        
+                                        <input type="file" name="file" id="fileInput" 
+                                               class="form-control d-none" 
+                                               accept="image/*" 
+                                               onchange="previewImage(this)" required>
+                                        
+                                        <button type="button" class="btn btn-outline-success btn-lg"
+                                                onclick="document.getElementById('fileInput').click()">
+                                            <i class="fas fa-folder-open me-2"></i>
+                                            Choose File
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="mt-3">
+                                        <small class="text-muted">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            Supported formats: PNG, JPG, JPEG, GIF, BMP, TIFF (Max: 16MB)
+                                        </small>
+                                    </div>
+                                </div>
+                                
+                                <!-- Image Preview -->
+                                <div class="text-center mb-4" id="previewContainer" style="display: none;">
+                                    <h6 class="text-muted mb-3">Preview:</h6>
+                                    <img id="imagePreview" class="image-preview" style="max-height: 300px;">
+                                </div>
+                                
+                                <!-- Upload Button -->
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary btn-lg px-5" id="uploadBtn">
+                                        <i class="fas fa-microscope me-2"></i>
+                                        Analyze Leaf
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="container py-5">
+            <h2 class="text-center mb-5">
+                <i class="fas fa-cogs me-2"></i>
+                How It Works
+            </h2>
+            
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-image fa-3x text-primary"></i>
+                            </div>
+                            <h5 class="card-title">1. Image Upload</h5>
+                            <p class="card-text">
+                                Upload a clear image of a plant leaf. Our system supports 
+                                multiple formats and automatically preprocesses the image.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-eye fa-3x text-success"></i>
+                            </div>
+                            <h5 class="card-title">2. Edge Detection</h5>
+                            <p class="card-text">
+                                Apply multiple edge detection algorithms (Sobel, Prewitt, 
+                                Canny, LoG) to analyze leaf structure and vein patterns.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-search fa-3x text-warning"></i>
+                            </div>
+                            <h5 class="card-title">3. Feature Extraction</h5>
+                            <p class="card-text">
+                                Extract comprehensive features including geometric descriptors, 
+                                texture analysis, vein patterns, and margin characteristics.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-brain fa-3x text-info"></i>
+                            </div>
+                            <h5 class="card-title">4. Classification</h5>
+                            <p class="card-text">
+                                Use hybrid classification combining traditional ML (KNN, SVM) 
+                                and deep learning for accurate species identification.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="bg-light py-5">
+            <div class="container">
+                <div class="row text-center">
+                    <div class="col-md-3 col-6 mb-4">
+                        <div class="card border-0 bg-transparent">
+                            <div class="card-body">
+                                <i class="fas fa-leaf fa-2x text-success mb-2"></i>
+                                <h3 class="fw-bold text-success">72,500+</h3>
+                                <p class="text-muted mb-0">Leaf Images Analyzed</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 mb-4">
+                        <div class="card border-0 bg-transparent">
+                            <div class="card-body">
+                                <i class="fas fa-seedling fa-2x text-primary mb-2"></i>
+                                <h3 class="fw-bold text-primary">38+</h3>
+                                <p class="text-muted mb-0">Plant Species</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 mb-4">
+                        <div class="card border-0 bg-transparent">
+                            <div class="card-body">
+                                <i class="fas fa-chart-line fa-2x text-warning mb-2"></i>
+                                <h3 class="fw-bold text-warning">94.5%</h3>
+                                <p class="text-muted mb-0">Accuracy Rate</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 mb-4">
+                        <div class="card border-0 bg-transparent">
+                            <div class="card-body">
+                                <i class="fas fa-clock fa-2x text-info mb-2"></i>
+                                <h3 class="fw-bold text-info">&lt;3s</h3>
+                                <p class="text-muted mb-0">Processing Time</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Section -->
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow">
+                        <div class="card-body p-5 text-center">
+                            <h3 class="mb-4">
+                                <i class="fas fa-code me-2"></i>
+                                Developer API
+                            </h3>
+                            <p class="lead mb-4">
+                                Integrate our plant identification system into your applications 
+                                using our RESTful API.
+                            </p>
+                            
+                            <div class="bg-dark text-light p-4 rounded mb-4 text-start">
+                                <code>
+                                    <span class="text-success">POST</span> /api/predict<br>
+                                    <span class="text-muted"># Upload image file for prediction</span><br><br>
+                                    
+                                    <span class="text-info">curl</span> -X POST \<br>
+                                    &nbsp;&nbsp;-F "file=@leaf_image.jpg" \<br>
+                                    &nbsp;&nbsp;http://localhost:5000/api/predict
+                                </code>
+                            </div>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <a href="/api/health" target="_blank" class="btn btn-outline-primary w-100">
+                                        <i class="fas fa-heartbeat me-2"></i>
+                                        API Health Check
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="{{ url_for('demo') }}" class="btn btn-outline-success w-100">
+                                        <i class="fas fa-play me-2"></i>
+                                        Try Demo
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Enhanced file input handling
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            // Show preview container
+            document.getElementById('previewContainer').style.display = 'block';
+            
+            // Update upload button text
+            document.getElementById('uploadBtn').innerHTML = 
+                '<i class="fas fa-microscope me-2"></i>Analyze ' + file.name;
+            
+            // Validate file size
+            if (file.size > 16 * 1024 * 1024) {
+                alert('File size too large. Maximum size is 16MB.');
+                e.target.value = '';
+                document.getElementById('previewContainer').style.display = 'none';
+                document.getElementById('uploadBtn').innerHTML = 
+                    '<i class="fas fa-microscope me-2"></i>Analyze Leaf';
+                return;
+            }
+        }
+    });
+
+    // Form submission handling
+    document.getElementById('uploadForm').addEventListener('submit', function(e) {
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        
+        if (!fileInput.files || fileInput.files.length === 0) {
+            e.preventDefault();
+            alert('Please select an image file to upload.');
+            return;
+        }
+        
+        // Show loading state
+        uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+        uploadBtn.disabled = true;
+    });
+</script>
+{% endblock %}

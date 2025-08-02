@@ -1,0 +1,27 @@
+# Core libraries
+numpy>=1.21.0
+opencv-python>=4.5.0
+scikit-image>=0.18.0
+Pillow>=8.3.0
+matplotlib>=3.4.0
+seaborn>=0.11.0
+
+# Machine Learning
+scikit-learn>=1.0.0
+tensorflow>=2.8.0
+torch>=1.11.0
+torchvision>=0.12.0
+
+# Web Framework
+Flask>=2.0.0
+Flask-WTF>=1.0.0
+
+# Utilities
+joblib>=1.1.0
+pandas>=1.3.0
+tqdm>=4.62.0
+requests>=2.26.0
+
+# Image processing
+scipy>=1.7.0
+skimage>=0.0
