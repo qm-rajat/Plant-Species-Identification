@@ -1,0 +1,31 @@
+# Core Libraries
+numpy
+pandas
+matplotlib
+
+# Image Processing
+opencv-python
+Pillow
+scikit-image
+
+# Feature Extraction and ML
+scikit-learn
+imutils
+
+# Deep Learning (optional)
+tensorflow
+keras
+
+# GUI (Tkinter is built-in with Python, no pip needed)
+
+# Web App (Optional, if using Flask)
+Flask
+
+# Web App (Alternative: Streamlit)
+streamlit
+
+# Evaluation Metrics
+seaborn
+
+# Jupyter Support
+notebook
