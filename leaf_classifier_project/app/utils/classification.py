@@ -716,5 +716,4 @@ if __name__ == "__main__":
     # Test prediction
     test_sample = X[0]
     prediction = classifier.predict_single(test_sample)
-    print(f"Sample prediction: {prediction['predicted_class']} "
-          f"(confidence: {prediction['confidence_percent']:.1f}%)")
+    print(f"Sample prediction: {prediction['predicted_class']} (confidence: {prediction['confidence_percent']:.1f}%)")

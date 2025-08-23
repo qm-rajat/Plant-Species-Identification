@@ -330,7 +330,7 @@ class ModelEvaluator:
         Returns:
             Noise robustness evaluation results
         """
-        from .preprocessing import ImagePreprocessor
+        from app.utils.preprocessing import ImagePreprocessor
         
         print("Evaluating noise robustness...")
         

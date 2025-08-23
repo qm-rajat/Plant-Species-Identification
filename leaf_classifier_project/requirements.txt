@@ -24,4 +24,4 @@ requests>=2.26.0
 
 # Image processing
 scipy>=1.7.0
-skimage>=0.0
+scikit-image>=0.18.0
