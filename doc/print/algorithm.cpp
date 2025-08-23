@@ -1,6 +1,6 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc.hpp>
-#include <opencv2/ximgproc.hpp>
+// No ximgproc dependency needed
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -173,7 +173,9 @@ public:
         }
         
         // Apply CLAHE for better contrast
-        Ptr<CLAHE> clahe = createCLAHE(2.0, Size(8, 8));
+        Ptr<CLAHE> clahe = createCLAHE();
+        clahe->setClipLimit(2.0);
+        clahe->setTilesGridSize(Size(8, 8));
         clahe->apply(gray, gray);
         
         // Create directional kernels for vein detection
@@ -487,7 +489,6 @@ int main() {
     return 0;
 }
 
-
- // comile it
-//g++ -std=c++17 -O3 advanced_leaf_vein_detector.cpp -o leaf_detector `pkg-config --cflags --libs opencv4`
+// Compile with:
+// g++ -std=c++17 -O3 algorithm.cpp -o leaf_detector -I"C:\opencv\opencv\build\include" -L"C:\opencv\opencv\build\x64\vc16\lib" -lopencv_core460 -lopencv_imgproc460 -lopencv_highgui460 -lopencv_imgcodecs460
 
