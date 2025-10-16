@@ -266,7 +266,7 @@ leaf_classifier_project/
 
 ## 🔧 Configuration
 
-### Training Configuration
+### Training Configuration 
 Create a `config.json` file for custom training:
 
 ```json
