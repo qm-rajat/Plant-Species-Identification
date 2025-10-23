@@ -4,6 +4,8 @@ import sys
 import os
 sys.path.append('LOMAVE_workspace/LeafOrNot_workspace')
 from leafdet.quick_rule import quick_leaf_rule
+sys.path.append('plant_species_id')
+from main_pipeline import identify_plant_species
 
 def calculate_gradient(blurred_image):
     # Compute gradients using Sobel operators
@@ -108,7 +110,7 @@ def custom_edge_detection(image):
     return final_edges
 
 # Example usage
-image_path = 'LOMAVE_workspace/data/leaf/3f1ce663-3715-4220-bbce-93bcc9f0c478___GH_HL Leaf 311.JPG'
+image_path = 'LOMAVE_workspace/data/non_leaf/Screenshot 2025-08-06 224240.png'
 image = cv2.imread(image_path)
 if image is None:
     print("Error: Could not load image.")
@@ -120,7 +122,17 @@ else:
     label, score, diag = quick_leaf_rule(image)
     
     print(f"Image: {os.path.basename(image_path)}")
-    print(f"Classification: {label} (Score: {score:.2f})")
+    print(f"Leaf Classification: {label} (Score: {score:.2f})")
+    
+    # If it's a leaf, identify the species
+    if label == 'leaf':
+        result = identify_plant_species(image_path)
+        if result['success'] and result['is_leaf']:
+            print(f"Species: {result['species']} (Confidence: {result['confidence']:.2f})")
+        else:
+            print("Species identification failed or not a leaf.")
+    else:
+        print("Not a leaf, skipping species identification.")
     
     # Display the results
     cv2.imshow('Original Image', image)
