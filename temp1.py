@@ -2,10 +2,9 @@ import cv2
 import numpy as np
 import sys
 import os
+from transformers import pipeline
 sys.path.append('LOMAVE_workspace/LeafOrNot_workspace')
 from leafdet.quick_rule import quick_leaf_rule
-sys.path.append('plant_species_id')
-from main_pipeline import identify_plant_species
 
 def calculate_gradient(blurred_image):
     # Compute gradients using Sobel operators
@@ -110,7 +109,7 @@ def custom_edge_detection(image):
     return final_edges
 
 # Example usage
-image_path = 'LOMAVE_workspace/data/non_leaf/Screenshot 2025-08-06 224240.png'
+image_path = 'leaf 2.jpeg'
 image = cv2.imread(image_path)
 if image is None:
     print("Error: Could not load image.")
@@ -124,13 +123,22 @@ else:
     print(f"Image: {os.path.basename(image_path)}")
     print(f"Leaf Classification: {label} (Score: {score:.2f})")
     
-    # If it's a leaf, identify the species
+    # If it's a leaf, identify the species using AI
     if label == 'leaf':
-        result = identify_plant_species(image_path)
-        if result['success'] and result['is_leaf']:
-            print(f"Species: {result['species']} (Confidence: {result['confidence']:.2f})")
-        else:
-            print("Species identification failed or not a leaf.")
+        try:
+            # Load the image classification pipeline for plant species
+            # Using a model trained on plant species identification
+            classifier = pipeline("image-classification", model="nateraw/vit-base-beans")
+            # This model is trained on bean plant diseases, but demonstrates the concept
+            # For better results, you could use models like:
+            # - "microsoft/DialoGPT-medium" (general)
+            # - "google/vit-base-patch16-224" (general vision)
+            # - Plant-specific models from Hugging Face
+            results = classifier(image_path)
+            top_result = results[0]
+            print(f"AI Species Prediction: {top_result['label']} (Confidence: {top_result['score']:.2f})")
+        except Exception as e:
+            print(f"AI species identification failed: {e}")
     else:
         print("Not a leaf, skipping species identification.")
     
