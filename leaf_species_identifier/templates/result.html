@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identification Results - Leaf Species Identifier</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .result-card {
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .result-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+        }
+        .confidence-bar {
+            height: 20px;
+            border-radius: 10px;
+            background-color: #e9ecef;
+            overflow: hidden;
+        }
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745 0%, #ffc107 50%, #dc3545 100%);
+            transition: width 1s ease-in-out;
+        }
+        .species-card {
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .species-card.best {
+            border-color: #28a745;
+            background-color: #f8fff8;
+        }
+        .prediction-item {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #dee2e6;
+            transition: all 0.3s ease;
+        }
+        .prediction-item:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .btn-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+        }
+        .btn-custom:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-leaf me-2"></i>
+                Leaf Species Identifier
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Results Section -->
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="result-card">
+                    <!-- Header -->
+                    <div class="result-header text-center">
+                        <h1 class="display-5 fw-bold mb-3">
+                            <i class="fas fa-check-circle me-3"></i>
+                            Identification Complete
+                        </h1>
+                        <p class="lead mb-0">Here are the results for your leaf image</p>
+                    </div>
+
+                    <!-- Results Body -->
+                    <div class="card-body p-5">
+                        <!-- Image Info -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h4 class="mb-3">
+                                    <i class="fas fa-image me-2"></i>
+                                    Image Information
+                                </h4>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <p class="mb-2"><strong>File:</strong> {{ result.image_path.split('/')[-1] }}</p>
+                                        <p class="mb-2">
+                                            <strong>Processing Status:</strong>
+                                            {% if result.processing_successful %}
+                                                <span class="badge bg-success">Successful</span>
+                                            {% else %}
+                                                <span class="badge bg-danger">Failed</span>
+                                            {% endif %}
+                                        </p>
+                                        {% if result.error %}
+                                            <p class="mb-0 text-danger">
+                                                <strong>Error:</strong> {{ result.error }}
+                                            </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h4 class="mb-3">
+                                    <i class="fas fa-leaf me-2"></i>
+                                    Leaf Validation
+                                </h4>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row align-items-center mb-3">
+                                            <div class="col-8">
+                                                <strong>Is Leaf:</strong>
+                                                {% if result.is_leaf %}
+                                                    <span class="badge bg-success ms-2">Yes</span>
+                                                {% else %}
+                                                    <span class="badge bg-danger ms-2">No</span>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-4 text-end">
+                                                <span class="text-muted">{{ "%.1f"|format(result.leaf_confidence * 100) }}%</span>
+                                            </div>
+                                        </div>
+                                        <div class="confidence-bar">
+                                            <div class="confidence-fill" style="width: {{ result.leaf_confidence * 100 }}%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if result.is_leaf %}
+                            <!-- Species Classification -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4 class="mb-3">
+                                        <i class="fas fa-seedling me-2"></i>
+                                        Species Classification
+                                    </h4>
+
+                                    <!-- Main Prediction -->
+                                    <div class="card species-card best mb-4">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-8">
+                                                    <h3 class="card-title mb-2">{{ result.species }}</h3>
+                                                    <p class="card-text text-muted mb-0">Primary Prediction</p>
+                                                </div>
+                                                <div class="col-md-4 text-end">
+                                                    <div class="mb-2">
+                                                        <strong class="h4 text-success">{{ "%.1f"|format(result.species_confidence * 100) }}%</strong>
+                                                        <small class="text-muted">confidence</small>
+                                                    </div>
+                                                    <div class="confidence-bar">
+                                                        <div class="confidence-fill" style="width: {{ result.species_confidence * 100 }}%"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Top Predictions -->
+                                    {% if result.top_predictions %}
+                                        <h5 class="mb-3">Top Predictions</h5>
+                                        <div class="row">
+                                            {% for prediction in result.top_predictions %}
+                                                <div class="col-md-4 mb-3">
+                                                    <div class="prediction-item">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <strong>{{ prediction.class }}</strong>
+                                                            <span class="badge bg-secondary">{{ "%.1f"|format(prediction.confidence) }}%</span>
+                                                        </div>
+                                                        <div class="progress mt-2" style="height: 6px;">
+                                                            <div class="progress-bar bg-primary" style="width: {{ prediction.confidence }}%"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% else %}
+                            <!-- Not a Leaf Message -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="alert alert-warning text-center" role="alert">
+                                        <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                                        <h4 class="alert-heading">Not a Leaf Image</h4>
+                                        <p class="mb-0">
+                                            The uploaded image does not appear to be a leaf. Please try uploading a clear image of a plant leaf.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Action Buttons -->
+                        <div class="row mt-4">
+                            <div class="col-12 text-center">
+                                <a href="/" class="btn btn-custom me-3">
+                                    <i class="fas fa-upload me-2"></i>
+                                    Upload Another Image
+                                </a>
+                                <button onclick="window.print()" class="btn btn-outline-secondary">
+                                    <i class="fas fa-print me-2"></i>
+                                    Print Results
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light mt-5 py-4">
+        <div class="container text-center">
+            <p>&copy; 2024 Leaf Species Identifier. Built with Flask and Machine Learning.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Animate confidence bars on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const confidenceBars = document.querySelectorAll('.confidence-fill');
+            confidenceBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 500);
+            });
+        });
+    </script>
+</body>
+</html>
